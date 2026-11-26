@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>我的小站 · 分享与交流</title>
+<meta name="description" content="一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。">
+<meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11151c" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="我的小站">
+<meta property="og:description" content="一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232f6bff'/%3E%3Cpath d='M20 42V24l12 12 12-12v18' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ===== 基础 ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg: #f7f8fa;
+  --bg-soft: #eef1f6;
+  --card: #ffffff;
+  --text: #14181f;
+  --muted: #6b7280;
+  --line: #e6e9ef;
+  --accent: #2f6bff;
+  --accent-soft: #eef3ff;
+  --good: #12a06a;
+  --bad: #d92d20;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 10px 30px -18px rgba(16, 24, 40, .25);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --maxw: 880px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1319;
+    --bg-soft: #161c25;
+    --card: #161b23;
+    --text: #e6e9ef;
+    --muted: #98a2b3;
+    --line: #242c38;
+    --accent: #6c9dff;
+    --accent-soft: #1c2740;
+    --good: #3ddc97;
+    --bad: #ff6b5e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px -18px rgba(0, 0, 0, .6);
+  }
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: anywhere;
+}
+
+[hidden] { display: none !important; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1, h2, h3 { line-height: 1.25; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1rem; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--card); padding: .6rem 1rem; border-radius: 0 0 var(--radius-sm) 0; z-index: 50;
+}
+.skip:focus { left: 0; }
+
+/* ===== 顶栏 ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  display: flex; align-items: center; gap: .75rem;
+  padding: .55rem 1rem;
+}
+.brand { display: inline-flex; align-items: center; gap: .5rem; color: var(--text); font-weight: 650; }
+.brand:hover { text-decoration: none; }
+.brand-dot {
+  width: 20px; height: 20px; border-radius: 6px;
+  background: linear-gradient(135deg, var(--accent), #7c5cff);
+  box-shadow: 0 2px 6px -2px var(--accent);
+}
+.brand-name { font-size: .98rem; }
+
+.nav {
+  display: flex; gap: .15rem; margin-left: auto;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav a {
+  flex: 0 0 auto;
+  padding: .38rem .7rem; border-radius: 999px;
+  color: var(--muted); font-size: .9rem; font-weight: 550;
+}
+.nav a:hover { background: var(--bg-soft); text-decoration: none; }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+
+/* ===== 布局 ===== */
+main {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+.view { display: block; }
+
+.banner {
+  max-width: var(--maxw); margin: .75rem auto 0;
+  padding: .7rem .9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: var(--accent-soft);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-size: .88rem;
+}
+.banner strong { color: var(--accent); }
+
+.hero {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 10%, var(--card)), var(--card) 70%);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow);
+  padding: clamp(1.2rem, 5vw, 2.2rem);
+  margin-bottom: 1.4rem;
+}
+.eyebrow { margin: 0 0 .3rem; color: var(--accent); font-size: .82rem; font-weight: 700; letter-spacing: .12em; }
+.hero h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); margin-bottom: .5rem; }
+.lede { margin: 0 0 1.1rem; color: var(--muted); font-size: 1rem; max-width: 46ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.stats {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+  list-style: none; margin: 1.2rem 0 0; padding: .9rem 0 0;
+  border-top: 1px dashed var(--line);
+  font-size: .82rem; color: var(--muted);
+}
+.stats strong { display: block; color: var(--text); font-size: 1.05rem; font-weight: 650; }
+
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  margin: 1.8rem 0 .8rem;
+}
+.section-head:first-child { margin-top: .2rem; }
+.more { font-size: .85rem; color: var(--muted); }
+.page-lede { margin: -.2rem 0 1rem; color: var(--muted); font-size: .92rem; }
+
+/* ===== 卡片 / 列表 ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.stack { display: grid; gap: .65rem; }
+
+.post {
+  display: block; padding: .95rem 1.05rem; color: inherit;
+  transition: transform .12s ease, border-color .12s ease;
+}
+.post:hover { text-decoration: none; border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); transform: translateY(-1px); }
+.post h3 { margin-bottom: .25rem; }
+.post .excerpt { margin: 0 0 .55rem; color: var(--muted); font-size: .9rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.meta { display: flex; flex-wrap: wrap; gap: .2rem .8rem; font-size: .78rem; color: var(--muted); }
+.meta .dot { opacity: .45; }
+
+.empty {
+  padding: 1.6rem 1rem; text-align: center; color: var(--muted);
+  font-size: .9rem; border: 1px dashed var(--line); border-radius: var(--radius);
+}
+
+/* ===== 文件网格 ===== */
+.grid {
+  display: grid; gap: .75rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.file {
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.file .thumb {
+  aspect-ratio: 4 / 3; background: var(--bg-soft);
+  display: grid; place-items: center; overflow: hidden; cursor: zoom-in;
+}
+.file .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.file .thumb .ext {
+  font-size: 1.1rem; font-weight: 700; letter-spacing: .05em; color: var(--muted);
+  text-transform: uppercase;
+}
+.file .body { padding: .6rem .7rem .7rem; display: flex; flex-direction: column; gap: .2rem; flex: 1; }
+.file .name { color: var(--text); font-size: .86rem; font-weight: 600; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.file .sub { font-size: .74rem; color: var(--muted); }
+.file .file-actions { display: flex; gap: .35rem; margin-top: .45rem; }
+
+/* ===== 表单 ===== */
+.form { padding: 1rem; display: grid; gap: .8rem; margin-bottom: 1.1rem; }
+.row { display: grid; gap: .8rem; grid-template-columns: 1fr 1fr; }
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+
+.field { display: grid; gap: .3rem; }
+.field > span { font-size: .8rem; color: var(--muted); font-weight: 550; }
+input[type="text"], input:not([type]), textarea, select {
+  width: 100%; padding: .65rem .8rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit; font-size: .95rem;
+  min-height: 44px;
+}
+textarea { resize: vertical; min-height: 96px; }
+input:focus, textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  outline-offset: 1px; border-color: var(--accent);
+}
+
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.form-foot { display: flex; align-items: center; justify-content: flex-end; gap: .75rem; }
+.hint { font-size: .8rem; color: var(--muted); margin-right: auto; }
+.hint.bad { color: var(--bad); }
+.hint.good { color: var(--good); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .6rem 1.05rem; min-height: 42px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--card); color: var(--text);
+  font: inherit; font-weight: 600; font-size: .92rem;
+  cursor: pointer; white-space: nowrap;
+  transition: transform .1s ease, filter .15s ease;
+}
+.btn:hover { text-decoration: none; filter: brightness(.97); }
+.btn:active { transform: scale(.985); }
+.btn.primary { background: var(--accent); border-color: transparent; color: #fff; }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn.small { min-height: 34px; padding: .3rem .8rem; font-size: .82rem; }
+.btn.danger { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+
+.drop {
+  display: grid; place-items: center; gap: .25rem; text-align: center;
+  padding: 1.6rem 1rem;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.drop:hover, .drop.over { background: var(--accent-soft); border-color: var(--accent); }
+.drop-icon { font-size: 1.4rem; color: var(--accent); line-height: 1; }
+.drop-text { font-size: .92rem; font-weight: 600; }
+.drop-sub { font-size: .78rem; color: var(--muted); }
+
+.progress { display: flex; align-items: center; gap: .6rem; }
+.progress-track { flex: 1; height: 8px; border-radius: 999px; background: var(--bg-soft); overflow: hidden; }
+.progress-bar { height: 100%; width: 0; background: var(--accent); transition: width .18s ease; }
+.progress-pct { font-size: .78rem; color: var(--muted); min-width: 3.2em; text-align: right; }
+
+/* ===== 帖子详情 ===== */
+.back { display: inline-block; margin-bottom: .8rem; font-size: .88rem; color: var(--muted); }
+.post-full { padding: 1.15rem; margin-bottom: 1.2rem; }
+.post-full h1 { font-size: 1.4rem; margin-bottom: .5rem; }
+.post-full .content { white-space: pre-wrap; margin: .8rem 0 1rem; }
+.sub { margin: 0 0 .7rem; font-size: 1rem; color: var(--muted); font-weight: 600; }
+.count { color: var(--muted); font-weight: 400; }
+.reply { padding: .8rem .95rem; }
+.reply .who { font-size: .82rem; color: var(--accent); font-weight: 600; margin-bottom: .2rem; }
+.reply .content { white-space: pre-wrap; font-size: .92rem; }
+.admin-bar { display: flex; gap: .4rem; margin-top: .6rem; }
+
+/* ===== 已隐藏内容（管理员） ===== */
+.hidden-area { margin-top: 1.8rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+.hidden-item { padding: .65rem .8rem; display: flex; gap: .55rem; align-items: flex-start; }
+.hidden-item .kind {
+  flex: 0 0 auto; font-size: .72rem; padding: .08rem .45rem; border-radius: 999px;
+  background: var(--bg-soft); color: var(--muted); margin-top: .15rem;
+}
+.hidden-item .text { flex: 1; min-width: 0; }
+.hidden-item .text b { display: block; font-size: .88rem; font-weight: 600; }
+.hidden-item .text span {
+  display: block; font-size: .78rem; color: var(--muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hidden-item .actions { display: flex; gap: .3rem; flex: 0 0 auto; }
+
+.more-btn { display: block; margin: 1rem auto 0; }
+
+/* ===== 页脚 ===== */
+.footer {
+  max-width: var(--maxw); margin: 2rem auto 0; padding: 1.2rem 1rem calc(2rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between;
+  font-size: .8rem; color: var(--muted);
+}
+.footer p { margin: 0; }
+.link { background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: .8rem; cursor: pointer; text-decoration: underline; }
+
+/* ===== 浮层 ===== */
+.toast {
+  position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: min(90vw, 480px);
+  padding: .6rem 1rem; border-radius: 999px;
+  background: #1b2028; color: #fff; font-size: .86rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .5);
+  z-index: 100;
+  animation: toast-in .18s ease;
+}
+.toast.bad { background: var(--bad); }
+.toast.good { background: var(--good); }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(0, 0, 0, .86);
+  display: grid; place-items: center; padding: 1.2rem;
+  cursor: zoom-out;
+}
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+
+/* ===== 文章排版 ===== */
+.prose { padding: 1.1rem 1.2rem; margin-bottom: 1rem; }
+.prose h2 { margin: 1.1rem 0 .4rem; font-size: 1.05rem; }
+.prose h2:first-child { margin-top: 0; }
+.prose p { margin: .4rem 0; color: var(--muted); }
+.prose ul { margin: .4rem 0; padding-left: 1.1rem; color: var(--muted); }
+.prose li { margin: .25rem 0; }
+.prose strong { color: var(--text); }
+
+/* ===== 小屏微调 ===== */
+@media (max-width: 420px) {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: .55rem; }
+  .brand-name { display: none; }
+  .hero-actions .btn { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .post:hover { transform: none; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"我的小站","alternateName":"我的小站","description":"一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。"}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-name">我的小站</span>
+    </a>
+    <nav class="nav" aria-label="主导航">
+      <a href="#/" data-nav="home">首页</a>
+      <a href="#/community" data-nav="community">社区</a>
+      <a href="#/files" data-nav="files">文件</a>
+      <a href="#/about" data-nav="about">关于</a>
+    </nav>
+  </div>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main id="main">
+
+  <!-- ========== 首页 ========== -->
+  <section id="view-home" class="view">
+    <div class="hero">
+      <p class="eyebrow">欢迎来到</p>
+      <h1>我的小站</h1>
+      <p class="lede">一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#/files">上传 / 下载文件</a>
+        <a class="btn" href="#/community">去社区聊聊</a>
+      </div>
+      <ul class="stats" id="stats"></ul>
+    </div>
+
+    <div class="section-head">
+      <h2>最新分享</h2>
+      <a class="more" href="#/files">全部 →</a>
+    </div>
+    <div id="home-files" class="grid"></div>
+
+    <div class="section-head">
+      <h2>最新话题</h2>
+      <a class="more" href="#/community">全部 →</a>
+    </div>
+    <div id="home-posts" class="stack"></div>
+  </section>
+
+  <!-- ========== 社区 ========== -->
+  <section id="view-community" class="view" hidden>
+    <div class="section-head">
+      <h1>社区</h1>
+      <button class="btn ghost small" type="button" data-refresh="posts">刷新</button>
+    </div>
+    <p class="page-lede">想到什么就发一条，别人可以回复。内容会保存在云端，手机和电脑都能看。</p>
+
+    <form id="post-form" class="card form" autocomplete="off">
+      <div class="row">
+        <label class="field">
+          <span>昵称</span>
+          <input type="text" name="nickname" maxlength="24" placeholder="怎么称呼你" data-nick>
+        </label>
+        <label class="field">
+          <span>标题（可选）</span>
+          <input type="text" name="title" maxlength="120" placeholder="一句话说明">
+        </label>
+      </div>
+      <label class="field">
+        <span>内容</span>
+        <textarea name="body" rows="4" maxlength="8000" placeholder="想说什么？" required></textarea>
+      </label>
+      <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="form-foot">
+        <span class="hint" id="post-hint"></span>
+        <button class="btn primary" type="submit" id="post-submit">发布</button>
+      </div>
+    </form>
+
+    <div id="post-list" class="stack"></div>
+
+    <div class="hidden-area" hidden>
+      <h2 class="sub">已隐藏的内容</h2>
+      <div class="stack hidden-list"></div>
+    </div>
+  </section>
+
+  <!-- ========== 帖子详情 ========== -->
+  <section id="view-post" class="view" hidden>
+    <a class="back" href="#/community">← 返回社区</a>
+    <article id="post-detail" class="card post-full"></article>
+
+    <h2 class="sub">回复 <span id="reply-count" class="count"></span></h2>
+    <div id="reply-list" class="stack"></div>
+
+    <form id="reply-form" class="card form" autocomplete="off">
+      <div class="row">
+        <label class="field">
+          <span>昵称</span>
+          <input type="text" name="nickname" maxlength="24" placeholder="怎么称呼你" data-nick>
+        </label>
+      </div>
+      <label class="field">
+        <span>回复内容</span>
+        <textarea name="body" rows="3" maxlength="4000" placeholder="说点什么…" required></textarea>
+      </label>
+      <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="form-foot">
+        <span class="hint" id="reply-hint"></span>
+        <button class="btn primary" type="submit" id="reply-submit">回复</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ========== 文件 ========== -->
+  <section id="view-files" class="view" hidden>
+    <div class="section-head">
+      <h1>文件共享</h1>
+      <button class="btn ghost small" type="button" data-refresh="files">刷新</button>
+    </div>
+    <p class="page-lede">任何人都能上传，任何人都能下载。图片可以直接在线看，其他文件点「下载」存到手机里。</p>
+
+    <form id="upload-form" class="card form" autocomplete="off">
+      <div class="row">
+        <label class="field">
+          <span>昵称</span>
+          <input type="text" name="nickname" maxlength="24" placeholder="怎么称呼你" data-nick>
+        </label>
+        <label class="field">
+          <span>说明（可选）</span>
+          <input type="text" name="description" maxlength="300" placeholder="比如：会议照片、说明书">
+        </label>
+      </div>
+      <label class="drop" id="drop">
+        <input type="file" id="file-input" multiple hidden>
+        <span class="drop-icon" aria-hidden="true">＋</span>
+        <span class="drop-text">点击选择文件，或把文件拖到这里</span>
+        <span class="drop-sub">图片、文档、压缩包都行 · 单个不超过 <span data-max-mb>25</span> MB</span>
+      </label>
+      <div id="upload-progress" class="progress" hidden>
+        <div class="progress-track"><div class="progress-bar"></div></div>
+        <span class="progress-pct"></span>
+      </div>
+      <div class="form-foot">
+        <span class="hint" id="upload-hint"></span>
+        <button class="btn primary" type="submit" id="upload-submit">上传</button>
+      </div>
+    </form>
+
+    <div id="file-grid" class="grid"></div>
+
+    <div class="hidden-area" hidden>
+      <h2 class="sub">已隐藏的内容</h2>
+      <div class="stack hidden-list"></div>
+    </div>
+  </section>
+
+  <!-- ========== 关于 ========== -->
+  <section id="view-about" class="view" hidden>
+    <h1>关于</h1>
+    <div class="card prose">
+      <h2>这是什么地方</h2>
+      <p>这是一个属于我们自己的小站。用来放想长期留下来的东西：说明、照片、资料；也用来聊几句。</p>
+      <h2>怎么用</h2>
+      <ul>
+        <li><strong>看内容</strong>：随便点，不需要注册、不需要登录。</li>
+        <li><strong>发帖</strong>：在「社区」填昵称和内容就能发，别人可以回复。</li>
+        <li><strong>传文件</strong>：在「文件」里选好文件点上传，别人马上就能下载。</li>
+        <li><strong>删掉发错的东西</strong>：点页面最下面的「管理」，输入管理密码后可以隐藏或删除。</li>
+      </ul>
+      <h2>要注意</h2>
+      <p>这里是公开的，任何拿到网址的人都能看到你上传的内容。请不要上传身份证、银行卡、密码这类敏感信息；文件会被公开下载。</p>
+    </div>
+    <div class="card prose">
+      <h2>联系</h2>
+      <p>有问题或建议，去「社区」发一条就行。（这里可以改成你的联系方式。）</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>© <span id="year"></span> 我的小站 · 数据存在云端，随时可访问</p>
+  <button class="link" type="button" id="admin-btn">管理</button>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="lightbox" class="lightbox" hidden>
+  <img alt="图片预览" id="lightbox-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+</div>
+
+<noscript>
+  <div class="banner">这个网站需要浏览器开启 JavaScript 才能上传和发帖；不开也能看到页面上的介绍文字。</div>
+</noscript>
+
+<script>
+/*
+ * 我的小站 —— 前端逻辑（零依赖）
+ * 数据存在 Supabase（免费版）：数据库存文字，Storage 存文件。
+ * 上线前只需要改下面 CONFIG 里的两行。
+ */
+'use strict';
+
+/* ================= 配置 ================= */
+const CONFIG = {
+  siteName: '我的小站',
+  // 例：https://abcdefghijkl.supabase.co
+  supabaseUrl: 'https://kcthejkzkafucfbxsixs.supabase.co',
+  // Supabase 项目设置里那个 anon public key（可以公开，不是密码）
+  supabaseAnonKey: 'sb_publishable_1BmprGWRpClNjXSHVRyO6A_Pwim2lYz',
+  bucket: 'uploads',       // 存文件的 bucket 名称
+  maxFileMB: 25,           // 单个文件大小上限（要和 Supabase 后台设置一致）
+  pollSeconds: 12,         // 多少秒自动刷新一次（让新内容自动出现）
+  pageSize: 30,            // 一次显示多少条
+};
+
+/* ================= 小工具 ================= */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+function h(tag, props = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'dataset') Object.assign(el.dataset, v);
+    else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'text') el.textContent = v;
+    else if (v === true) el.setAttribute(k, '');
+    else el.setAttribute(k, v);
+  }
+  for (const c of children.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+
+function store(key, value) {
+  try {
+    if (value === undefined) return localStorage.getItem(key);
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  } catch (_) { /* 隐私模式忽略 */ }
+  return null;
+}
+
+function fmtRel(iso) {
+  if (!iso) return '';
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return '';
+  const diff = Math.max(0, Date.now() - t) / 1000;
+  if (diff < 60) return '刚刚';
+  if (diff < 3600) return `${Math.floor(diff / 60)} 分钟前`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} 小时前`;
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)} 天前`;
+  const d = new Date(t);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function fmtAbs(iso) {
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function fmtSize(bytes) {
+  const n = Number(bytes) || 0;
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(n < 10240 ? 1 : 0)} KB`;
+  if (n < 1024 * 1024 * 1024) return `${(n / 1024 / 1024).toFixed(1)} MB`;
+  return `${(n / 1024 / 1024 / 1024).toFixed(2)} GB`;
+}
+
+function extOf(name) {
+  const m = String(name || '').match(/\.([a-z0-9]{1,6})$/i);
+  return m ? m[1].toLowerCase() : 'file';
+}
+
+function cleanText(s, max) {
+  return String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, max);
+}
+
+function nickValue(input) {
+  const v = cleanText(input && input.value, 24) || '匿名';
+  return v;
+}
+
+function uuid() {
+  if (self.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+/* ================= 提示 ================= */
+function setBanner(...nodes) {
+  const b = $('#banner');
+  if (!b) return;
+  b.hidden = false;
+  b.replaceChildren(...nodes);
+}
+
+function clearBanner() {
+  const b = $('#banner');
+  if (b) b.hidden = true;
+}
+
+let toastTimer = 0;
+function toast(msg, kind) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, kind === 'bad' ? 4200 : 2400);
+}
+
+function hint(id, msg, kind) {
+  const el = $('#' + id);
+  if (!el) return;
+  el.textContent = msg || '';
+  el.className = 'hint' + (kind ? ' ' + kind : '');
+}
+
+/* ================= 状态 ================= */
+const state = {
+  demo: false,
+  route: { name: 'home' },
+  posts: [],
+  files: [],
+  post: null,
+  replies: [],
+  adminKey: '',
+  pollTimer: 0,
+  seq: 0,
+  postLimit: CONFIG.pageSize,
+  fileLimit: 60,
+};
+
+/* ================= 数据层 ================= */
+function isConfigured() {
+  const u = String(CONFIG.supabaseUrl || '').trim();
+  const k = String(CONFIG.supabaseAnonKey || '').trim();
+  return /^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i.test(u.replace(/\/+$/, '')) && !k.startsWith('PASTE') && k.length > 20;
+}
+
+function baseUrl() {
+  return String(CONFIG.supabaseUrl || '').trim().replace(/\/+$/, '');
+}
+
+function publicUrl(path) {
+  const safe = String(path || '').split('/').filter((s) => s && s !== '.' && s !== '..').map(encodeURIComponent).join('/');
+  return `${baseUrl()}/storage/v1/object/public/${CONFIG.bucket}/${safe}`;
+}
+
+async function api(path, opts = {}) {
+  const { method = 'GET', body, prefer, headers = {}, timeout = 20000 } = opts;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeout);
+  try {
+    const res = await fetch(baseUrl() + path, {
+      method,
+      signal: ctrl.signal,
+      headers: {
+        apikey: String(CONFIG.supabaseAnonKey).trim(),
+        Authorization: 'Bearer ' + String(CONFIG.supabaseAnonKey).trim(),
+        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...(prefer ? { Prefer: prefer } : {}),
+        ...headers,
+      },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+
+    const txt = await res.text();
+    if (!res.ok) {
+      let msg = txt;
+      try {
+        const j = JSON.parse(txt);
+        msg = j.message || j.hint || j.details || txt;
+        if (j.code === '42P01' || j.code === 'PGRST205') msg = '数据库表还没建好，请先执行 supabase-schema.sql';
+        if (j.code === '42501') msg = '数据库权限没开放，请检查 SQL 里的 RLS 策略';
+        if (j.code === 'PGRST301') msg = 'anon key 不对，请重新复制 Supabase 的 anon public key';
+      } catch (_) { /* 保持原文 */ }
+      throw new Error(`${msg || '请求失败'}（${res.status}）`);
+    }
+    if (!txt) return null;
+    try { return JSON.parse(txt); } catch (_) { return null; }
+  } catch (e) {
+    if (e && e.name === 'AbortError') throw new Error('网络超时，稍后再试');
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function dbCounts() {
+  try {
+    return await api('/rest/v1/rpc/site_stats', { method: 'POST', body: {} });
+  } catch (_) {
+    return null;
+  }
+}
+
+const DB = {
+  async posts(limit) {
+    return api(`/rest/v1/posts?select=id,nickname,title,body,created_at,is_hidden,replies(count)` +
+      `&is_hidden=eq.false&order=created_at.desc&limit=${limit}`);
+  },
+  async post(id) {
+    const rows = await api(`/rest/v1/posts?select=*&id=eq.${encodeURIComponent(id)}&limit=1`);
+    return rows && rows[0] ? rows[0] : null;
+  },
+  async replies(postId) {
+    return api(`/rest/v1/replies?select=*&post_id=eq.${encodeURIComponent(postId)}` +
+      `&is_hidden=eq.false&order=created_at.asc&limit=200`);
+  },
+  async files(limit) {
+    return api(`/rest/v1/files?select=*&is_hidden=eq.false&order=created_at.desc&limit=${limit}`);
+  },
+  async addPost(row) {
+    return api('/rest/v1/posts', { method: 'POST', body: row, prefer: 'return=representation' });
+  },
+  async addReply(row) {
+    return api('/rest/v1/replies', { method: 'POST', body: row, prefer: 'return=representation' });
+  },
+  async addFile(row) {
+    return api('/rest/v1/files', { method: 'POST', body: row, prefer: 'return=representation' });
+  },
+  async rpc(fn, args) {
+    return api('/rest/v1/rpc/' + fn, { method: 'POST', body: args });
+  },
+};
+
+function adminCall(fn, args) {
+  return DB.rpc(fn, { ...args, p_key: state.adminKey });
+}
+
+/* ================= 上传 ================= */
+function uploadObject(path, file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${baseUrl()}/storage/v1/object/${CONFIG.bucket}/${path.split('/').map(encodeURIComponent).join('/')}`);
+    xhr.timeout = 300000;
+    xhr.setRequestHeader('apikey', String(CONFIG.supabaseAnonKey).trim());
+    xhr.setRequestHeader('Authorization', 'Bearer ' + String(CONFIG.supabaseAnonKey).trim());
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    xhr.setRequestHeader('cache-control', 'max-age=31536000');
+    xhr.setRequestHeader('x-upsert', 'false');
+    if (xhr.upload) {
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
+      };
+    }
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.responseText);
+      else reject(new Error(`上传失败（${xhr.status}）：${String(xhr.responseText).slice(0, 200)}`));
+    };
+    xhr.onerror = () => reject(new Error('网络中断，上传没成功'));
+    xhr.ontimeout = () => reject(new Error('上传超时'));
+    xhr.send(file);
+  });
+}
+
+/** 大图先在浏览器里压缩一下，省流量也省空间 */
+async function maybeCompress(file) {
+  const okType = /^image\/(jpeg|png)$/.test(file.type);
+  if (!okType || file.size < 1.2 * 1024 * 1024) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxSide = 1920;
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && file.size < 4 * 1024 * 1024) return file;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((r) => canvas.toBlob(r, file.type, 0.85));
+    if (blob && blob.size < file.size) {
+      return new File([blob], file.name, { type: file.type });
+    }
+  } catch (_) { /* 压缩失败就用原图 */ }
+  return file;
+}
+
+async function uploadOne(file, nickname, description, onProgress) {
+  const ready = await maybeCompress(file);
+  const path = `${uuid()}.${extOf(file.name)}`;
+  await uploadObject(path, ready, onProgress);
+  await DB.addFile({
+    nickname,
+    description: cleanText(description, 300),
+    name: cleanText(file.name, 200) || '未命名文件',
+    path,
+    size: ready.size,
+    mime: ready.type || 'application/octet-stream',
+  });
+}
+
+/* ================= 渲染：帖子 / 回复 / 文件 ================= */
+function metaRow(...parts) {
+  const bits = parts.filter(Boolean);
+  const el = h('div', { class: 'meta' });
+  bits.forEach((bit, i) => {
+    if (i > 0) el.append(h('span', { class: 'dot', 'aria-hidden': 'true' }, '·'));
+    el.append(bit instanceof Node ? bit : h('span', {}, bit));
+  });
+  return el;
+}
+
+function replyCount(p) {
+  const arr = p.replies;
+  if (Array.isArray(arr) && arr[0] && typeof arr[0].count === 'number') return arr[0].count;
+  return 0;
+}
+
+function postCard(p) {
+  const body = String(p.body || '');
+  const hasTitle = !!(p.title && p.title.trim());
+  const title = hasTitle ? p.title : body.split('\n')[0].slice(0, 40);
+  // 有标题时摘要取正文开头；没标题时跳过已作为标题的第一行
+  const rest = hasTitle ? body : body.split('\n').slice(1).join(' ');
+  const excerpt = rest.replace(/\s+/g, ' ').trim().slice(0, 90);
+  return h('a', { class: 'card post', href: '#/post/' + p.id },
+    h('h3', {}, title || '（无标题）'),
+    excerpt ? h('p', { class: 'excerpt' }, excerpt) : null,
+    metaRow(
+      h('span', {}, p.nickname || '匿名'),
+      h('span', { title: fmtAbs(p.created_at) }, fmtRel(p.created_at)),
+      h('span', {}, `${replyCount(p)} 条回复`),
+    ),
+  );
+}
+
+function emptyBox(text) {
+  return h('div', { class: 'empty' }, text);
+}
+
+function fileUrl(f) {
+  return f.demo && f.url ? f.url : publicUrl(f.path);
+}
+
+function fileCard(f) {
+  const url = fileUrl(f);
+  const isImg = /^image\//.test(f.mime || '');
+  const thumb = h('div', { class: 'thumb' });
+  if (isImg) {
+    const img = h('img', { src: url, alt: f.name || '图片', loading: 'lazy', decoding: 'async' });
+    img.addEventListener('click', () => openLightbox(url));
+    img.addEventListener('error', () => { img.replaceWith(h('span', { class: 'ext' }, extOf(f.name))); });
+    thumb.append(img);
+  } else {
+    thumb.append(h('span', { class: 'ext' }, extOf(f.name)));
+  }
+
+  const actions = h('div', { class: 'file-actions' },
+    h('button', { class: 'btn small', type: 'button', onclick: () => downloadFile(f) }, '下载'),
+    isImg ? h('button', { class: 'btn small ghost', type: 'button', onclick: () => openLightbox(url) }, '查看') : null,
+  );
+
+  if (state.adminKey) {
+    actions.append(h('button', { class: 'btn small danger', type: 'button', onclick: () => adminDelete('file', f.id) }, '删除'));
+  }
+
+  const nameEl = f.demo
+    ? h('div', { class: 'name', title: f.name }, f.name || '未命名')
+    : h('a', { class: 'name', href: url, target: '_blank', rel: 'noopener', title: f.name }, f.name || '未命名');
+
+  return h('div', { class: 'card file' },
+    thumb,
+    h('div', { class: 'body' },
+      nameEl,
+      h('div', { class: 'sub' }, `${fmtSize(f.size)} · ${f.nickname || '匿名'}`),
+      h('div', { class: 'sub', title: fmtAbs(f.created_at) }, fmtRel(f.created_at)),
+      f.description ? h('div', { class: 'sub' }, f.description) : null,
+      actions,
+    ),
+  );
+}
+
+async function downloadFile(f) {
+  if (f.demo) { toast('演示模式：这是示例文件'); return; }
+  const url = fileUrl(f);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(String(res.status));
+    const blob = await res.blob();
+    const a = h('a', { href: URL.createObjectURL(blob), download: f.name || 'download' });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  } catch (_) {
+    toast('没能直接下载，长按上面的文件名可以打开原文件');
+  }
+}
+
+function openLightbox(url) {
+  const box = $('#lightbox');
+  $('#lightbox-img').src = url;
+  box.hidden = false;
+}
+
+function renderPosts(target, posts, emptyText) {
+  const sig = 'p|' + (state.adminKey ? 'A' : '') + '|' + (emptyText || '') + '|'
+    + posts.map((p) => `${p.id}:${replyCount(p)}`).join(',');
+  if (target.__sig === sig) return;
+  target.__sig = sig;
+  target.replaceChildren();
+  if (!posts.length) {
+    target.append(emptyBox(emptyText || '还没有人发帖。来当第一个吧 👋'));
+    return;
+  }
+  posts.forEach((p) => target.append(postCard(p)));
+}
+
+function renderFiles(target, files, emptyText) {
+  const sig = 'f|' + (state.adminKey ? 'A' : '') + '|' + (emptyText || '') + '|' + files.map((f) => f.id).join(',');
+  if (target.__sig === sig) return;
+  target.__sig = sig;
+  target.replaceChildren();
+  if (!files.length) {
+    target.append(emptyBox(emptyText || '还没有文件。点上面的方框选一个上传试试 📎'));
+    return;
+  }
+  files.forEach((f) => target.append(fileCard(f)));
+}
+
+function renderStats(counts) {
+  const box = $('#stats');
+  if (!box) return;
+  box.replaceChildren();
+  const val = (n) => (counts && Number.isFinite(Number(n)) ? String(n) : '—');
+  const add = (label, value) => box.append(h('li', {}, h('strong', {}, value), label));
+  add('条帖子', val(counts && counts.posts));
+  add('个文件', val(counts && counts.files));
+  add('已用空间', counts && Number.isFinite(Number(counts.bytes)) ? fmtSize(counts.bytes) : '—');
+}
+
+function renderDetail() {
+  const box = $('#post-detail');
+  const p = state.post;
+  box.replaceChildren();
+  if (!p) {
+    box.append(emptyBox('这条帖子不存在，或者已经被删掉了。'));
+    $('#reply-list').replaceChildren();
+    $('#reply-count').textContent = '';
+    $('#reply-form').hidden = true;
+    return;
+  }
+  $('#reply-form').hidden = false;
+  box.append(
+    h('h1', {}, p.title && p.title.trim() ? p.title : '（无标题）'),
+    metaRow(h('span', {}, p.nickname || '匿名'), h('span', { title: fmtAbs(p.created_at) }, fmtRel(p.created_at))),
+    h('div', { class: 'content' }, p.body || ''),
+  );
+  if (state.adminKey) {
+    box.append(h('div', { class: 'admin-bar' },
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => adminHide('post', p.id, true) }, '隐藏这条帖子'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => adminDelete('post', p.id) }, '删除'),
+    ));
+  }
+
+  $('#reply-count').textContent = `(${state.replies.length})`;
+  const list = $('#reply-list');
+  list.replaceChildren();
+  if (!state.replies.length) {
+    list.append(emptyBox('还没有回复。'));
+  } else {
+    state.replies.forEach((r) => {
+      const card = h('div', { class: 'card reply' },
+        h('div', { class: 'who' }, r.nickname || '匿名'),
+        h('div', { class: 'content' }, r.body || ''),
+        h('div', { class: 'meta' }, h('span', { title: fmtAbs(r.created_at) }, fmtRel(r.created_at))),
+      );
+      if (state.adminKey) {
+        card.append(h('div', { class: 'admin-bar' },
+          h('button', { class: 'btn small danger', type: 'button', onclick: () => adminHide('reply', r.id, true) }, '隐藏'),
+          h('button', { class: 'btn small danger', type: 'button', onclick: () => adminDelete('reply', r.id) }, '删除'),
+        ));
+      }
+      list.append(card);
+    });
+  }
+}
+
+/* ================= 管理 ================= */
+async function enterAdmin() {
+  if (state.adminKey) {
+    state.adminKey = '';
+    toast('已退出管理模式');
+    rerender();
+    return;
+  }
+  if (state.demo) { toast('演示模式不能管理，连上数据库后才行', 'bad'); return; }
+  const key = prompt('输入管理密码（在数据库里设置的那个）：');
+  if (!key) return;
+  try {
+    const ok = await DB.rpc('admin_check', { p_key: key });
+    if (ok === true) {
+      state.adminKey = key;
+      toast('已进入管理模式', 'good');
+      rerender();
+    } else {
+      toast('密码不对', 'bad');
+    }
+  } catch (e) {
+    toast(friendlyError(e), 'bad');
+  }
+}
+
+async function adminHide(kind, id, hidden) {
+  try {
+    await adminCall('admin_set_hidden', { p_kind: kind, p_id: id, p_hidden: hidden });
+    toast(hidden ? '已隐藏' : '已恢复', 'good');
+    rerender();
+  } catch (e) { toast(friendlyError(e), 'bad'); }
+}
+
+async function adminDelete(kind, id) {
+  if (!confirm('确定删除？删掉就找不回来了。')) return;
+  try {
+    await adminCall('admin_delete', { p_kind: kind, p_id: id });
+    toast('已删除', 'good');
+    if (kind === 'post' && state.route.name === 'post') {
+      location.hash = '#/community';
+    } else {
+      rerender();
+    }
+  } catch (e) { toast(friendlyError(e), 'bad'); }
+}
+
+/* ================= 演示数据 ================= */
+function demoImage(c1, c2, label) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
+    </linearGradient></defs>
+    <rect width="640" height="480" fill="url(#g)"/>
+    <text x="320" y="250" font-family="sans-serif" font-size="34" fill="rgba(255,255,255,.92)"
+      text-anchor="middle">${label}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+const DEMO = {
+  posts: [
+    { id: 3, nickname: '站长', title: '欢迎来到我的小站', body: '这里可以随便发点什么。\n不需要注册，填个昵称就能说话，别人也能回你。\n\n上传文件在「文件」那一页，图片可以直接在线看。', created_at: new Date(Date.now() - 1000 * 60 * 12).toISOString(), replies: [{ count: 2 }] },
+    { id: 2, nickname: '小林', title: '周末拍的照片放上来了', body: '拍得一般，随便看看。下次想去海边。', created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), replies: [{ count: 0 }] },
+    { id: 1, nickname: '路过的', title: '', body: '第一次来，这个站看起来挺清爽的。请问文件能存多久？', created_at: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(), replies: [{ count: 1 }] },
+  ],
+  replies: {
+    3: [
+      { id: 1, post_id: 3, nickname: '小林', body: '界面挺好看的，手机上用着舒服。', created_at: new Date(Date.now() - 1000 * 60 * 8).toISOString() },
+      { id: 2, post_id: 3, nickname: '站长', body: '有问题直接在这里说就行。', created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString() },
+    ],
+    1: [
+      { id: 3, post_id: 1, nickname: '站长', body: '只要不删就一直都在。', created_at: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString() },
+    ],
+    2: [],
+  },
+  files: [
+    { id: 4, nickname: '小林', description: '示例图片，可以点开看大图', name: '示例照片-01.jpg', path: 'demo-1.jpg', size: 428_000, mime: 'image/jpeg', created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), demo: true, url: demoImage('#f6a5b8', '#c56cf0', '示例图片') },
+    { id: 3, nickname: '小林', description: '', name: '示例照片-02.jpg', path: 'demo-2.jpg', size: 512_000, mime: 'image/jpeg', created_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), demo: true, url: demoImage('#4facfe', '#00c6fb', '示例图片') },
+    { id: 2, nickname: '站长', description: '压缩包里是几份常用表格', name: '常用表格.zip', path: 'demo-3.zip', size: 1_860_000, mime: 'application/zip', created_at: new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString(), demo: true },
+    { id: 1, nickname: '站长', description: '使用方法说明', name: '使用说明.pdf', path: 'demo-4.pdf', size: 96_000, mime: 'application/pdf', created_at: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(), demo: true },
+  ],
+};
+
+/* ================= 取数据 ================= */
+async function loadPosts(limit) {
+  if (state.demo) return DEMO.posts.slice(0, limit);
+  return DB.posts(limit);
+}
+
+async function loadFiles(limit) {
+  if (state.demo) return DEMO.files.slice(0, limit);
+  return DB.files(limit);
+}
+
+function demoCounts() {
+  return {
+    posts: DEMO.posts.length,
+    files: DEMO.files.length,
+    bytes: DEMO.files.reduce((s, f) => s + (f.size || 0), 0),
+  };
+}
+
+function friendlyError(e) {
+  const msg = (e && e.message) || String(e);
+  if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) {
+    return '连不上服务器：检查手机网络，或 Supabase 网址是否填对';
+  }
+  return msg;
+}
+
+/* ================= 路由 ================= */
+function safeDecode(s) {
+  try { return decodeURIComponent(s); } catch (_) { return s; }
+}
+
+function parseHash() {
+  const raw = location.hash.replace(/^#\/?/, '');
+  const parts = raw.split('/').filter(Boolean).map(safeDecode);
+  if (!parts.length) return { name: 'home' };
+  if (parts[0] === 'post' && parts[1]) return { name: 'post', id: parts[1] };
+  if (['community', 'files', 'about'].includes(parts[0])) return { name: parts[0] };
+  return { name: 'home' };
+}
+
+const VIEW_LABEL = { home: '', community: '社区', files: '文件共享', about: '关于' };
+
+async function refreshHome(seq = state.seq) {
+  const [files, posts] = await Promise.all([loadFiles(6), loadPosts(5)]);
+  if (seq !== state.seq) return;
+  state.files = files;
+  state.posts = posts;
+  renderFiles($('#home-files'), files, '还没有人分享文件');
+  renderPosts($('#home-posts'), posts, '还没有人发帖');
+  if (state.demo) {
+    renderStats(demoCounts());
+    return;
+  }
+  const counts = await dbCounts();
+  if (seq !== state.seq) return;
+  renderStats(counts);
+}
+
+async function refreshCommunity(seq = state.seq) {
+  const posts = await loadPosts(state.postLimit);
+  if (seq !== state.seq) return;
+  state.posts = posts;
+  const list = $('#post-list');
+  renderPosts(list, posts);
+  const more = moreButton(list, 'post-more', () => {
+    state.postLimit += CONFIG.pageSize;
+    refreshCommunity();
+  });
+  more.hidden = posts.length < state.postLimit;
+  await refreshHidden(seq);
+}
+
+async function refreshFiles(seq = state.seq) {
+  const files = await loadFiles(state.fileLimit);
+  if (seq !== state.seq) return;
+  state.files = files;
+  const grid = $('#file-grid');
+  renderFiles(grid, files);
+  const more = moreButton(grid, 'file-more', () => {
+    state.fileLimit += 60;
+    refreshFiles();
+  });
+  more.hidden = files.length < state.fileLimit;
+  await refreshHidden(seq);
+}
+
+/** 「加载更多」按钮：内容超过一屏时出现，点一次多加载一页 */
+function moreButton(container, id, onClick) {
+  let btn = document.getElementById(id);
+  if (!btn) {
+    btn = h('button', { id, class: 'btn ghost more-btn', type: 'button' }, '加载更多');
+    btn.addEventListener('click', onClick);
+    container.after(btn);
+  }
+  return btn;
+}
+
+/** 管理员模式下的「已隐藏」列表 */
+async function refreshHidden(seq = state.seq) {
+  const areas = $$('.hidden-area');
+  if (!state.adminKey || state.demo) {
+    areas.forEach((a) => { a.hidden = true; });
+    return;
+  }
+  let data = null;
+  try {
+    data = await DB.rpc('admin_hidden_items', { p_key: state.adminKey });
+  } catch (_) {
+    return;
+  }
+  if (seq !== state.seq) return;
+  const groups = [
+    ['post', '帖子', (data && data.posts) || []],
+    ['reply', '回复', (data && data.replies) || []],
+    ['file', '文件', (data && data.files) || []],
+  ];
+  const total = groups.reduce((n, g) => n + g[2].length, 0);
+
+  areas.forEach((area) => {
+    const list = area.querySelector('.hidden-list');
+    list.replaceChildren();
+    area.hidden = total === 0;
+    if (!total) return;
+    groups.forEach(([kind, label, rows]) => rows.forEach((row) => list.append(hiddenRow(kind, label, row))));
+  });
+}
+
+function hiddenRow(kind, label, row) {
+  const title = row.title || row.name || (row.body || '').slice(0, 30) || '（无内容）';
+  const sub = kind === 'reply'
+    ? `帖子 #${row.post_id}：${row.body || ''}`
+    : (row.body || row.description || '');
+  return h('div', { class: 'card hidden-item' },
+    h('span', { class: 'kind' }, label),
+    h('div', { class: 'text' }, h('b', {}, title), h('span', {}, sub)),
+    h('div', { class: 'actions' },
+      kind === 'file' ? null : h('button', { class: 'btn small', type: 'button', onclick: () => adminHide(kind, row.id, false) }, '恢复'),
+      h('button', { class: 'btn small danger', type: 'button', onclick: () => adminDelete(kind, row.id) }, '删除'),
+    ),
+  );
+}
+
+async function refreshPost(id, seq = state.seq) {
+  let post = null;
+  let replies = [];
+  if (state.demo) {
+    post = DEMO.posts.find((p) => String(p.id) === String(id)) || null;
+    replies = (DEMO.replies[id] || []).slice();
+  } else {
+    post = await DB.post(id);
+    if (seq !== state.seq) return;
+    replies = post ? await DB.replies(id) : [];
+  }
+  if (seq !== state.seq) return;
+  state.post = post;
+  state.replies = replies;
+  renderDetail();
+  if (post && state.route.name === 'post' && String(state.route.id) === String(id)) {
+    document.title = `${post.title || (post.body || '').slice(0, 20) || '帖子'} · ${CONFIG.siteName}`;
+  }
+}
+
+function showRoute(name) {
+  $$('.view').forEach((v) => { v.hidden = v.id !== 'view-' + name; });
+  $$('.nav a').forEach((a) => {
+    if (a.dataset.nav === name) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  document.title = VIEW_LABEL[name] ? `${VIEW_LABEL[name]} · ${CONFIG.siteName}` : CONFIG.siteName;
+}
+
+function refreshRoute(r, seq) {
+  if (seq !== state.seq) return Promise.resolve();
+  if (r.name === 'home') return refreshHome(seq);
+  if (r.name === 'community') return refreshCommunity(seq);
+  if (r.name === 'files') return refreshFiles(seq);
+  if (r.name === 'post') return refreshPost(r.id, seq);
+  return Promise.resolve();
+}
+
+async function handleRoute(opts = {}) {
+  const r = parseHash();
+  const seq = ++state.seq;
+  state.route = r;
+  showRoute(r.name);
+  if (opts.scroll !== false) window.scrollTo(0, 0);
+  startPolling();
+
+  try {
+    await refreshRoute(r, seq);
+    if (seq === state.seq && !state.demo) clearBanner();
+  } catch (e) {
+    if (seq !== state.seq) return;
+    setBanner(
+      h('strong', {}, '连不上数据服务：'),
+      friendlyError(e) + ' ',
+      h('button', {
+        class: 'link',
+        type: 'button',
+        onclick: () => handleRoute(),
+      }, '重试'),
+    );
+    if (r.name === 'home') {
+      renderFiles($('#home-files'), [], '加载失败，检查网络后点上面的「重试」');
+      renderPosts($('#home-posts'), [], '加载失败，检查网络后点上面的「重试」');
+    }
+  }
+}
+
+function startPolling() {
+  clearInterval(state.pollTimer);
+  if (state.demo) return;
+  state.pollTimer = setInterval(() => {
+    if (document.hidden) return;
+    // 用当前路由和当前序号静默刷新；如果期间用户切了页面，旧结果会被丢掉
+    const r = state.route;
+    const seq = state.seq;
+    Promise.resolve()
+      .then(() => refreshRoute(r, seq))
+      .catch(() => { /* 自动刷新失败不打扰用户 */ });
+  }, Math.max(5, CONFIG.pollSeconds) * 1000);
+}
+
+/* ================= 交互：发帖 / 回复 / 上传 ================= */
+function setBusy(btn, busy, label) {
+  if (busy) {
+    btn.dataset.old = btn.textContent;
+    btn.textContent = label || '处理中…';
+    btn.disabled = true;
+  } else {
+    btn.textContent = btn.dataset.old || btn.textContent;
+    btn.disabled = false;
+  }
+}
+
+function cooldownOk(key, seconds) {
+  const last = Number(store(key) || 0);
+  return Date.now() - last > seconds * 1000;
+}
+
+let posting = false;
+
+async function submitPost(e) {
+  e.preventDefault();
+  if (posting) return;
+  const form = e.currentTarget;
+  const btn = $('#post-submit');
+  const body = cleanText(form.elements.body.value, 8000);
+  const title = cleanText(form.elements.title.value, 120);
+  const nickname = nickValue(form.elements.nickname);
+
+  if (form.elements.website && form.elements.website.value) return; // 机器人
+  if (!body) { hint('post-hint', '内容不能为空', 'bad'); return; }
+  if (state.demo) { toast('演示模式：连上数据库后就能真的发帖', 'bad'); return; }
+  if (!cooldownOk('cooldown_post', 15)) { hint('post-hint', '刚发过了，等十几秒再发吧', 'bad'); return; }
+
+  setBusy(btn, true, '发布中…');
+  hint('post-hint', '');
+  posting = true;
+  try {
+    await DB.addPost({ nickname, title, body });
+    store('nick', nickname);
+    store('cooldown_post', String(Date.now()));
+    form.elements.body.value = '';
+    form.elements.title.value = '';
+    await refreshCommunity();
+    toast('发布成功', 'good');
+  } catch (err) {
+    hint('post-hint', friendlyError(err), 'bad');
+  } finally {
+    posting = false;
+    setBusy(btn, false);
+  }
+}
+
+async function submitReply(e) {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const btn = $('#reply-submit');
+  const body = cleanText(form.elements.body.value, 4000);
+  const nickname = nickValue(form.elements.nickname);
+  const postId = Number(state.route.id);
+
+  if (form.elements.website && form.elements.website.value) return;
+  if (!Number.isInteger(postId) || postId <= 0) { hint('reply-hint', '帖子地址不对，返回列表重新进入', 'bad'); return; }
+  if (!body) { hint('reply-hint', '内容不能为空', 'bad'); return; }
+  if (state.demo) { toast('演示模式：连上数据库后就能回复', 'bad'); return; }
+
+  setBusy(btn, true, '发送中…');
+  hint('reply-hint', '');
+  try {
+    await DB.addReply({ post_id: postId, nickname, body });
+    store('nick', nickname);
+    form.elements.body.value = '';
+    await refreshPost(postId);
+    toast('已回复', 'good');
+  } catch (err) {
+    hint('reply-hint', friendlyError(err), 'bad');
+  } finally {
+    setBusy(btn, false);
+  }
+}
+
+let pendingFiles = [];
+let uploading = false;
+
+function renderChosen() {
+  const el = $('#upload-hint');
+  if (!pendingFiles.length) { el.textContent = ''; return; }
+  const names = pendingFiles.slice(0, 2).map((f) => f.name).join('、');
+  el.textContent = pendingFiles.length > 2 ? `已选 ${pendingFiles.length} 个文件：${names} 等` : `已选：${names}`;
+}
+
+function setProgress(ratio) {
+  const box = $('#upload-progress');
+  box.hidden = false;
+  const pct = Math.round(Math.max(0, Math.min(1, ratio)) * 100);
+  $('#upload-progress .progress-bar').style.width = pct + '%';
+  $('#upload-progress .progress-pct').textContent = pct + '%';
+}
+
+async function submitUpload(e) {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const btn = $('#upload-submit');
+  const nickname = nickValue(form.elements.nickname);
+  const description = cleanText(form.elements.description.value, 300);
+
+  if (state.demo) { toast('演示模式：连上数据库后就能真的上传', 'bad'); return; }
+  if (uploading) return;
+  if (!pendingFiles.length) { hint('upload-hint', '先选一个文件', 'bad'); return; }
+
+  const tooBig = pendingFiles.find((f) => f.size > CONFIG.maxFileMB * 1024 * 1024);
+  if (tooBig) {
+    hint('upload-hint', `「${tooBig.name}」太大了，单个文件不能超过 ${CONFIG.maxFileMB} MB`, 'bad');
+    return;
+  }
+
+  uploading = true;
+  setBusy(btn, true, '上传中…');
+  hint('upload-hint', '');
+  const queue = pendingFiles.slice();
+  let done = 0;
+  try {
+    for (let i = 0; i < queue.length; i++) {
+      const file = queue[i];
+      await uploadOne(file, nickname, description, (p) => setProgress((i + p) / queue.length));
+      // 成功的从待传列表里移除，失败时可以只重试没传上去的
+      pendingFiles = pendingFiles.filter((f) => f !== file);
+      done++;
+      setProgress((i + 1) / queue.length);
+    }
+    store('nick', nickname);
+    form.elements.description.value = '';
+    $('#file-input').value = '';
+    await refreshFiles();
+    toast(done > 1 ? `${done} 个文件上传完成` : '上传完成', 'good');
+  } catch (err) {
+    hint('upload-hint', done
+      ? `已传好 ${done} 个，剩下的没成功：${friendlyError(err)}`
+      : friendlyError(err), 'bad');
+  } finally {
+    uploading = false;
+    setBusy(btn, false);
+    renderChosen();
+    setTimeout(() => { $('#upload-progress').hidden = true; }, 1200);
+  }
+}
+
+function bindUploadBox() {
+  const drop = $('#drop');
+  const input = $('#file-input');
+  const take = (list) => {
+    if (uploading) return;
+    const incoming = Array.from(list || []);
+    if (!incoming.length) return;
+    const merged = pendingFiles.slice();
+    for (const f of incoming) {
+      if (!merged.some((x) => x.name === f.name && x.size === f.size)) merged.push(f);
+    }
+    if (merged.length > 10) hint('upload-hint', '一次最多传 10 个文件，多的请分批', 'bad');
+    else hint('upload-hint', '');
+    pendingFiles = merged.slice(0, 10);
+    renderChosen();
+  };
+
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    drop.classList.remove('over');
+    take(e.dataTransfer.files);
+  });
+  input.addEventListener('change', () => take(input.files));
+}
+
+/* ================= 启动 ================= */
+function rerender(opts = {}) {
+  return handleRoute({ scroll: false, ...opts });
+}
+
+function applyConfig() {
+  CONFIG.supabaseUrl = String(CONFIG.supabaseUrl || '').trim();
+  CONFIG.supabaseAnonKey = String(CONFIG.supabaseAnonKey || '').trim();
+  state.demo = !isConfigured();
+  $$('.brand-name').forEach((el) => { el.textContent = CONFIG.siteName; });
+  document.querySelectorAll('meta[property="og:title"]').forEach((m) => m.setAttribute('content', CONFIG.siteName));
+  $$('[data-max-mb]').forEach((el) => { el.textContent = String(CONFIG.maxFileMB); });
+  $('#year').textContent = String(new Date().getFullYear());
+
+  if (state.demo) {
+    setBanner(
+      h('strong', {}, '演示模式：'),
+      '现在页面上是示例内容，还不能真的发帖和上传。把 Supabase 的网址和 key 交给帮你搭站的人，生成正式版后这里就是真实数据了。',
+    );
+  }
+  $$('[data-nick]').forEach((input) => { input.value = store('nick') || ''; });
+
+  // 构建时不知道最终网址（还没建站）时，用当前地址补上 canonical / og:url
+  const here = location.origin + location.pathname;
+  if (location.origin.startsWith('http') && !document.querySelector('link[rel="canonical"]')) {
+    const link = document.createElement('link');
+    link.rel = 'canonical';
+    link.href = here;
+    document.head.append(link);
+  }
+  if (location.origin.startsWith('http') && !document.querySelector('meta[property="og:url"]')) {
+    const meta = document.createElement('meta');
+    meta.setAttribute('property', 'og:url');
+    meta.setAttribute('content', here);
+    document.head.append(meta);
+  }
+}
+
+function bindEvents() {
+  window.addEventListener('hashchange', () => handleRoute());
+  $('#post-form').addEventListener('submit', submitPost);
+  $('#reply-form').addEventListener('submit', submitReply);
+  $('#upload-form').addEventListener('submit', submitUpload);
+  $('#admin-btn').addEventListener('click', enterAdmin);
+
+  $$('[data-refresh]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const kind = btn.dataset.refresh;
+      btn.disabled = true;
+      try {
+        if (kind === 'posts') await refreshCommunity();
+        else await refreshFiles();
+        toast('已刷新', 'good');
+      } catch (e) { toast(friendlyError(e), 'bad'); }
+      btn.disabled = false;
+    });
+  });
+
+  $('#lightbox').addEventListener('click', () => {
+    $('#lightbox').hidden = true;
+    $('#lightbox-img').src = '';
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') $('#lightbox').hidden = true;
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !state.demo) {
+      refreshRoute(state.route, state.seq).catch(() => {});
+    }
+  });
+
+  bindUploadBox();
+}
+
+function init() {
+  applyConfig();
+  bindEvents();
+  handleRoute();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
