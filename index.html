@@ -403,6 +403,14 @@ input:focus, textarea:focus {
 .ex-scene img { width: 100%; display: block; border-radius: 12px; box-shadow: var(--shadow); }
 .ex-scene figcaption { margin-top: .55rem; font-size: .82rem; color: var(--muted); text-align: center; }
 .ex-foot { margin: 2rem 0 0; text-align: center; font-size: .9rem; }
+
+.ex-sub {
+  margin: .1rem 0 .8rem;
+  font-family: var(--serif);
+  font-size: clamp(1rem, 3.6vw, 1.15rem);
+  color: var(--accent);
+  letter-spacing: .01em;
+}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"LuDao文学社","alternateName":"LuDao文学社","url":"https://plhy-philia.github.io/ldwxs/","description":"一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。"}
@@ -462,9 +470,10 @@ input:focus, textarea:focus {
   <!-- ========== 影展 ========== -->
   <section id="view-exhibition" class="view" hidden>
     <header class="ex-head">
-      <p class="eyebrow">2026 · 广州市铁一中学第一届影像艺术展</p>
-      <h1>感知 · 记录 · 表达</h1>
-      <p class="page-lede">58 张展览版面的线上版。策展：陆海阅（高二一班）、周宇村（高一五班）、黄子琳（高一八班）；标题书写：宋宇飞（高二一班）。</p>
+      <p class="eyebrow">2026 · 影像艺术展</p>
+      <h1>我们的摄影展</h1>
+      <p class="ex-sub">你说得对，但是感知 记录 表达 是…</p>
+      <p class="page-lede">58 张展览版面的线上版。策展：陆海阅、周宇村、黄子琳；标题书写：宋宇飞。</p>
     </header>
 
     <div class="ex-gallery" id="ex-gallery">
@@ -529,8 +538,8 @@ input:focus, textarea:focus {
     </div>
 
     <figure class="ex-scene">
-      <img src="assets/live.jpg" alt="展览现场：校园里的红色展架" loading="lazy" decoding="async">
-      <figcaption>展览现场 · 广州市铁一中学</figcaption>
+      <img src="assets/live.jpg" alt="展览现场：两块红色展架" loading="lazy" decoding="async">
+      <figcaption>展览现场 · 2026.5</figcaption>
     </figure>
 
     <p class="ex-foot"><a href="#/community">看完想说点什么？去社区留一句 →</a></p>
