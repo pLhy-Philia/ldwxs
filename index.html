@@ -1077,8 +1077,17 @@ function groupFiles(files) {
 }
 
 function sortBatch(g) {
-  // 按文件名自然排序：01、02…10，最后是「· 现场」这种
-  return g.files.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh', { numeric: true }));
+  // 带编号的按编号排（01、02…10），没有编号的（比如「· 现场」）排最后
+  const key = (f) => {
+    const m = String(f.name || '').match(/(\d+)(?=\.[a-z0-9]+$)/i);
+    return m ? [0, Number(m[1]), String(f.name)] : [1, 0, String(f.name)];
+  };
+  return g.files.slice().sort((a, b) => {
+    const ka = key(a); const kb = key(b);
+    if (ka[0] !== kb[0]) return ka[0] - kb[0];
+    if (ka[1] !== kb[1]) return ka[1] - kb[1];
+    return ka[2].localeCompare(kb[2], 'zh');
+  });
 }
 
 function batchCover(g) {
