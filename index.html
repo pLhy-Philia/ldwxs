@@ -24,11 +24,11 @@
   --text: #211b16;
   --muted: #7c7267;
   --line: #e5dac9;
-  --accent: #b3121f;
-  --accent-soft: #f8e7e3;
+  --accent: #b9646b;
+  --accent-soft: #f8eae7;
   --good: #2f7d54;
   --bad: #b3121f;
-  --thread: rgba(200, 16, 46, .34);
+  --thread: rgba(185, 100, 107, .20);
   --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "STSong", "SimSun", serif;
   --shadow: 0 1px 2px rgba(60, 42, 20, .05), 0 12px 32px -20px rgba(60, 42, 20, .35);
   --radius: 16px;
@@ -44,11 +44,11 @@
     --text: #ece3d8;
     --muted: #a89b8c;
     --line: #362c22;
-    --accent: #e05661;
+    --accent: #e09298;
     --accent-soft: #2c1a1a;
     --good: #6cc79a;
     --bad: #ff8a80;
-    --thread: rgba(224, 86, 97, .32);
+    --thread: rgba(224, 146, 152, .18);
     --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px -20px rgba(0, 0, 0, .7);
   }
 }
@@ -364,16 +364,12 @@ input:focus, textarea:focus {
 
 /* ===== 红线：呼应展陈里的引导线 ===== */
 .topbar::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent) 18%, var(--accent) 82%, transparent);
-  opacity: .8;
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+  opacity: .35;
 }
 
-.section-head h2 { display: inline-flex; align-items: center; }
-.section-head h2::before {
-  content: ""; display: inline-block; width: 18px; height: 1px;
-  background: var(--accent); opacity: .6; margin-right: .55rem;
-}
+
 
 .threaded { position: relative; padding-left: 18px; }
 .threaded::before {
@@ -383,22 +379,30 @@ input:focus, textarea:focus {
 .threaded > .card { position: relative; }
 .threaded > .card::before {
   content: ""; position: absolute; left: -16px; top: 24px;
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--accent); opacity: .55;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent); opacity: .4;
 }
 
 .hero { position: relative; }
 .hero h1 { letter-spacing: .02em; }
-.hero .eyebrow { display: inline-flex; align-items: center; gap: .5rem; }
-.hero .eyebrow::after {
-  content: ""; width: 32px; height: 1px; background: var(--accent); opacity: .5;
-}
 
-.footer { position: relative; }
-.footer::before {
-  content: ""; position: absolute; left: 1rem; top: -1px;
-  width: 48px; height: 1px; background: var(--accent); opacity: .5;
+
+
+
+
+/* ===== 影展 ===== */
+.ex-head { margin: .5rem 0 1.6rem; }
+.ex-head h1 { font-size: clamp(1.8rem, 7.5vw, 2.5rem); margin: .25rem 0 .6rem; }
+.ex-gallery { display: grid; gap: 14px; }
+.ex-gallery img {
+  width: 100%; height: auto; display: block;
+  border-radius: 10px; background: var(--bg-soft);
+  box-shadow: var(--shadow); cursor: zoom-in;
 }
+.ex-scene { margin: 2.2rem 0 0; }
+.ex-scene img { width: 100%; display: block; border-radius: 12px; box-shadow: var(--shadow); }
+.ex-scene figcaption { margin-top: .55rem; font-size: .82rem; color: var(--muted); text-align: center; }
+.ex-foot { margin: 2rem 0 0; text-align: center; font-size: .9rem; }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"LuDao文学社","alternateName":"LuDao文学社","url":"https://plhy-philia.github.io/ldwxs/","description":"一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。"}
@@ -415,6 +419,7 @@ input:focus, textarea:focus {
     </a>
     <nav class="nav" aria-label="主导航">
       <a href="#/" data-nav="home">首页</a>
+      <a href="#/exhibition" data-nav="exhibition">影展</a>
       <a href="#/community" data-nav="community">社区</a>
       <a href="#/files" data-nav="files">文件</a>
       <a href="#/about" data-nav="about">关于</a>
@@ -433,7 +438,8 @@ input:focus, textarea:focus {
       <h1>LuDao文学社</h1>
       <p class="lede">一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。</p>
       <div class="hero-actions">
-        <a class="btn primary" href="#/files">上传 / 下载文件</a>
+        <a class="btn primary" href="#/exhibition">看影展</a>
+        <a class="btn" href="#/files">上传 / 下载文件</a>
         <a class="btn" href="#/community">去社区聊聊</a>
       </div>
       <ul class="stats" id="stats"></ul>
@@ -449,7 +455,85 @@ input:focus, textarea:focus {
       <h2>最新话题</h2>
       <a class="more" href="#/community">全部 →</a>
     </div>
-    <div id="home-posts" class="stack threaded"></div>
+    <div id="home-posts" class="stack"></div>
+  </section>
+
+
+  <!-- ========== 影展 ========== -->
+  <section id="view-exhibition" class="view" hidden>
+    <header class="ex-head">
+      <p class="eyebrow">2026 · 广州市铁一中学第一届影像艺术展</p>
+      <h1>感知 · 记录 · 表达</h1>
+      <p class="page-lede">58 张展览版面的线上版。策展：陆海阅（高二一班）、周宇村（高一五班）、黄子琳（高一八班）；标题书写：宋宇飞（高二一班）。</p>
+    </header>
+
+    <div class="ex-gallery" id="ex-gallery">
+      <img src="assets/exhibition/01.jpg" alt="展览第 1 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/02.jpg" alt="展览第 2 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/03.jpg" alt="展览第 3 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/04.jpg" alt="展览第 4 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/05.jpg" alt="展览第 5 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/06.jpg" alt="展览第 6 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/07.jpg" alt="展览第 7 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/08.jpg" alt="展览第 8 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/09.jpg" alt="展览第 9 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/10.jpg" alt="展览第 10 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/11.jpg" alt="展览第 11 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/12.jpg" alt="展览第 12 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/13.jpg" alt="展览第 13 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/14.jpg" alt="展览第 14 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/15.jpg" alt="展览第 15 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/16.jpg" alt="展览第 16 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/17.jpg" alt="展览第 17 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/18.jpg" alt="展览第 18 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/19.jpg" alt="展览第 19 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/20.jpg" alt="展览第 20 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/21.jpg" alt="展览第 21 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/22.jpg" alt="展览第 22 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/23.jpg" alt="展览第 23 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/24.jpg" alt="展览第 24 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/25.jpg" alt="展览第 25 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/26.jpg" alt="展览第 26 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/27.jpg" alt="展览第 27 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/28.jpg" alt="展览第 28 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/29.jpg" alt="展览第 29 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/30.jpg" alt="展览第 30 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/31.jpg" alt="展览第 31 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/32.jpg" alt="展览第 32 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/33.jpg" alt="展览第 33 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/34.jpg" alt="展览第 34 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/35.jpg" alt="展览第 35 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/36.jpg" alt="展览第 36 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/37.jpg" alt="展览第 37 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/38.jpg" alt="展览第 38 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/39.jpg" alt="展览第 39 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/40.jpg" alt="展览第 40 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/41.jpg" alt="展览第 41 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/42.jpg" alt="展览第 42 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/43.jpg" alt="展览第 43 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/44.jpg" alt="展览第 44 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/45.jpg" alt="展览第 45 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/46.jpg" alt="展览第 46 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/47.jpg" alt="展览第 47 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/48.jpg" alt="展览第 48 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/49.jpg" alt="展览第 49 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/50.jpg" alt="展览第 50 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/51.jpg" alt="展览第 51 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/52.jpg" alt="展览第 52 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/53.jpg" alt="展览第 53 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/54.jpg" alt="展览第 54 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/55.jpg" alt="展览第 55 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/56.jpg" alt="展览第 56 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/57.jpg" alt="展览第 57 页" loading="lazy" decoding="async" width="1200" height="675">
+      <img src="assets/exhibition/58.jpg" alt="展览第 58 页" loading="lazy" decoding="async" width="1200" height="675">
+    </div>
+
+    <figure class="ex-scene">
+      <img src="assets/live.jpg" alt="展览现场：校园里的红色展架" loading="lazy" decoding="async">
+      <figcaption>展览现场 · 广州市铁一中学</figcaption>
+    </figure>
+
+    <p class="ex-foot"><a href="#/community">看完想说点什么？去社区留一句 →</a></p>
   </section>
 
   <!-- ========== 社区 ========== -->
@@ -1212,11 +1296,11 @@ function parseHash() {
   const parts = raw.split('/').filter(Boolean).map(safeDecode);
   if (!parts.length) return { name: 'home' };
   if (parts[0] === 'post' && parts[1]) return { name: 'post', id: parts[1] };
-  if (['community', 'files', 'about'].includes(parts[0])) return { name: parts[0] };
+  if (['community', 'files', 'about', 'exhibition'].includes(parts[0])) return { name: parts[0] };
   return { name: 'home' };
 }
 
-const VIEW_LABEL = { home: '', community: '社区', files: '文件共享', about: '关于' };
+const VIEW_LABEL = { home: '', exhibition: '影展', community: '社区', files: '文件共享', about: '关于' };
 
 async function refreshHome(seq = state.seq) {
   const [files, posts] = await Promise.all([loadFiles(6), loadPosts(5)]);
@@ -1628,6 +1712,15 @@ function bindEvents() {
       } catch (e) { toast(friendlyError(e), 'bad'); }
       btn.disabled = false;
     });
+  });
+
+  // 影展图片点开看大图
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest && e.target.closest('.ex-gallery img');
+    if (img) {
+      e.preventDefault();
+      openLightbox(img.src);
+    }
   });
 
   $('#lightbox').addEventListener('click', () => {
