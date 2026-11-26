@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>我的小站 · 分享与交流</title>
-<meta name="description" content="一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。">
+<title>LuDao文学社 · 文字与影像</title>
+<meta name="description" content="一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。">
 <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#11151c" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="我的小站">
-<meta property="og:description" content="一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。">
+<meta property="og:title" content="LuDao文学社">
+<meta property="og:description" content="一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。">
 <meta property="og:url" content="https://plhy-philia.github.io/ldwxs/">
 <link rel="canonical" href="https://plhy-philia.github.io/ldwxs/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232f6bff'/%3E%3Cpath d='M20 42V24l12 12 12-12v18' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -18,17 +18,19 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --bg: #f7f8fa;
-  --bg-soft: #eef1f6;
-  --card: #ffffff;
-  --text: #14181f;
-  --muted: #6b7280;
-  --line: #e6e9ef;
-  --accent: #2f6bff;
-  --accent-soft: #eef3ff;
-  --good: #12a06a;
-  --bad: #d92d20;
-  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 10px 30px -18px rgba(16, 24, 40, .25);
+  --bg: #f6f1e9;
+  --bg-soft: #efe6d9;
+  --card: #fffcf6;
+  --text: #211b16;
+  --muted: #7c7267;
+  --line: #e5dac9;
+  --accent: #b3121f;
+  --accent-soft: #f8e7e3;
+  --good: #2f7d54;
+  --bad: #b3121f;
+  --thread: rgba(200, 16, 46, .34);
+  --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+  --shadow: 0 1px 2px rgba(60, 42, 20, .05), 0 12px 32px -20px rgba(60, 42, 20, .35);
   --radius: 16px;
   --radius-sm: 12px;
   --maxw: 880px;
@@ -36,17 +38,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1319;
-    --bg-soft: #161c25;
-    --card: #161b23;
-    --text: #e6e9ef;
-    --muted: #98a2b3;
-    --line: #242c38;
-    --accent: #6c9dff;
-    --accent-soft: #1c2740;
-    --good: #3ddc97;
-    --bad: #ff6b5e;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px -18px rgba(0, 0, 0, .6);
+    --bg: #171310;
+    --bg-soft: #211b16;
+    --card: #1e1813;
+    --text: #ece3d8;
+    --muted: #a89b8c;
+    --line: #362c22;
+    --accent: #e05661;
+    --accent-soft: #2c1a1a;
+    --good: #6cc79a;
+    --bad: #ff8a80;
+    --thread: rgba(224, 86, 97, .32);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px -20px rgba(0, 0, 0, .7);
   }
 }
 
@@ -66,7 +69,10 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-h1, h2, h3 { line-height: 1.25; margin: 0; letter-spacing: -.01em; }
+h1, h2, h3 {
+  line-height: 1.25; margin: 0; letter-spacing: .01em;
+  font-family: var(--serif); font-weight: 600;
+}
 h1 { font-size: 1.75rem; }
 h2 { font-size: 1.15rem; }
 h3 { font-size: 1rem; }
@@ -355,9 +361,47 @@ input:focus, textarea:focus {
   * { animation: none !important; transition: none !important; }
   .post:hover { transform: none; }
 }
+
+/* ===== 红线：呼应展陈里的引导线 ===== */
+.topbar::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent) 18%, var(--accent) 82%, transparent);
+  opacity: .8;
+}
+
+.section-head h2 { display: inline-flex; align-items: center; }
+.section-head h2::before {
+  content: ""; display: inline-block; width: 18px; height: 1px;
+  background: var(--accent); opacity: .6; margin-right: .55rem;
+}
+
+.threaded { position: relative; padding-left: 18px; }
+.threaded::before {
+  content: ""; position: absolute; left: 5px; top: 16px; bottom: 16px;
+  width: 1px; background: var(--thread);
+}
+.threaded > .card { position: relative; }
+.threaded > .card::before {
+  content: ""; position: absolute; left: -16px; top: 24px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); opacity: .55;
+}
+
+.hero { position: relative; }
+.hero h1 { letter-spacing: .02em; }
+.hero .eyebrow { display: inline-flex; align-items: center; gap: .5rem; }
+.hero .eyebrow::after {
+  content: ""; width: 32px; height: 1px; background: var(--accent); opacity: .5;
+}
+
+.footer { position: relative; }
+.footer::before {
+  content: ""; position: absolute; left: 1rem; top: -1px;
+  width: 48px; height: 1px; background: var(--accent); opacity: .5;
+}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"我的小站","alternateName":"我的小站","url":"https://plhy-philia.github.io/ldwxs/","description":"一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。"}
+{"@context":"https://schema.org","@type":"WebSite","name":"LuDao文学社","alternateName":"LuDao文学社","url":"https://plhy-philia.github.io/ldwxs/","description":"一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。"}
 </script>
 </head>
 <body>
@@ -367,7 +411,7 @@ input:focus, textarea:focus {
   <div class="topbar-inner">
     <a class="brand" href="#/">
       <span class="brand-dot" aria-hidden="true"></span>
-      <span class="brand-name">我的小站</span>
+      <span class="brand-name">LuDao文学社</span>
     </a>
     <nav class="nav" aria-label="主导航">
       <a href="#/" data-nav="home">首页</a>
@@ -386,8 +430,8 @@ input:focus, textarea:focus {
   <section id="view-home" class="view">
     <div class="hero">
       <p class="eyebrow">欢迎来到</p>
-      <h1>我的小站</h1>
-      <p class="lede">一个可以自由分享文件、图片和想法的小站。随时上传，随时下载，随时聊聊。</p>
+      <h1>LuDao文学社</h1>
+      <p class="lede">一个存放文字与照片的地方。可以发帖、传照片，也可以只是看看。</p>
       <div class="hero-actions">
         <a class="btn primary" href="#/files">上传 / 下载文件</a>
         <a class="btn" href="#/community">去社区聊聊</a>
@@ -405,7 +449,7 @@ input:focus, textarea:focus {
       <h2>最新话题</h2>
       <a class="more" href="#/community">全部 →</a>
     </div>
-    <div id="home-posts" class="stack"></div>
+    <div id="home-posts" class="stack threaded"></div>
   </section>
 
   <!-- ========== 社区 ========== -->
@@ -438,7 +482,7 @@ input:focus, textarea:focus {
       </div>
     </form>
 
-    <div id="post-list" class="stack"></div>
+    <div id="post-list" class="stack threaded"></div>
 
     <div class="hidden-area" hidden>
       <h2 class="sub">已隐藏的内容</h2>
@@ -541,7 +585,7 @@ input:focus, textarea:focus {
 </main>
 
 <footer class="footer">
-  <p>© <span id="year"></span> 我的小站 · 数据存在云端，随时可访问</p>
+  <p>© <span id="year"></span> LuDao文学社 · 数据存在云端，随时可访问</p>
   <button class="link" type="button" id="admin-btn">管理</button>
 </footer>
 
@@ -564,7 +608,7 @@ input:focus, textarea:focus {
 
 /* ================= 配置 ================= */
 const CONFIG = {
-  siteName: '我的小站',
+  siteName: 'LuDao文学社',
   // 例：https://abcdefghijkl.supabase.co
   supabaseUrl: 'https://kcthejkzkafucfbxsixs.supabase.co',
   // Supabase 项目设置里那个 anon public key（可以公开，不是密码）
